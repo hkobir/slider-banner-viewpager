@@ -27,9 +27,12 @@ public class SliderAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
+        return colorName.size()==0?0:colorName.size()+2;
+
+    }
+    public int getRealCount() {
         return colorName.size();
     }
-
     @Override
     public boolean isViewFromObject(View view, Object object) {
         return view == object;
@@ -42,7 +45,7 @@ public class SliderAdapter extends PagerAdapter {
 
 
         ImageView banner = view.findViewById(R.id.dynamicAdViewIV);
-        String item = colorName.get(position);
+        String item = colorName.get(mapPagerPositionToModelPosition(position));
 
         Glide.with(context)
                 .load(item)
@@ -50,7 +53,7 @@ public class SliderAdapter extends PagerAdapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "clicked position: "+position, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "clicked position: "+mapPagerPositionToModelPosition(position), Toast.LENGTH_SHORT).show();
             }
         });
         ViewPager viewPager = (ViewPager) container;
@@ -65,4 +68,17 @@ public class SliderAdapter extends PagerAdapter {
         View view = (View) object;
         viewPager.removeView(view);
     }
+
+    private int mapPagerPositionToModelPosition(int pagerPosition) {
+        // Put last page model to the first position.
+        if (pagerPosition == 0) {
+            return getRealCount() - 1;
+        }
+        // Put first page model to the last position.
+        if (pagerPosition == getRealCount() + 1) {
+            return 0;
+        }
+        return pagerPosition - 1;
+    }
+
 }
