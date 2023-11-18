@@ -4,8 +4,17 @@
 
 <h1>HTML Links</h1>
 
-<a href="callback://auth_success?token=abcd25492">Visit!</a>
+<a href="#" id="redirectLink">Visit!</a>
+<script>
+        // Get the hyperlink element by its ID
+        var link = document.getElementById('redirectLink');
 
+        // Attach an event listener to the hyperlink
+        link.addEventListener('click', function() {
+            // Redirect to a new URL when the hyperlink is clicked
+            window.location.href = 'callback://auth_success?token=abcd25492';
+        });
+    </script>
 </body>
 </html>
 

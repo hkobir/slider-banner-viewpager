@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         webView = findViewById(R.id.webView);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         webView.loadUrl("file:///android_asset/visit.html");
         images = new ArrayList<>();
         images.add("https://wowslider.com/sliders/demo-77/data1/images/field175959_1920.jpg");
