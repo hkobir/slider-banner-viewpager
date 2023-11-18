@@ -1,15 +1,22 @@
 package com.example.playground;
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +31,17 @@ public class MainActivity extends AppCompatActivity {
     SliderAdapter adapter;
     private String TAG = "_Main";
     private Timer timer;
+    private WebView webView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        webView = findViewById(R.id.webView);
+        webView.loadUrl("file:///android_asset/visit.html");
         images = new ArrayList<>();
         images.add("https://wowslider.com/sliders/demo-77/data1/images/field175959_1920.jpg");
         images.add("https://soliloquywp.com/wp-content/uploads/2016/08/11-Website-Slider-Best-Practices-That-You-Must-Follow.png");
@@ -109,15 +121,14 @@ public class MainActivity extends AppCompatActivity {
             MainActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Log.i(TAG, "run: curentPos: " + viewPager.getCurrentItem());
                     if (viewPager.getCurrentItem() >= images.size()) {
                         viewPager.setCurrentItem(1, false);
-                        Log.d(TAG, "run: set" + 1);
+
 //                        indicator.getTabAt(1).select();
                     } else {
                         viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
 //                        indicator.getTabAt(viewPager.getCurrentItem()).select();
-                        Log.d(TAG, "run: set" + viewPager.getCurrentItem());
+
                     }
                 }
             });
@@ -128,7 +139,23 @@ public class MainActivity extends AppCompatActivity {
         timer = new Timer();
         timer.scheduleAtFixedRate(new SliderTimer(), 4000, 4000);
     }
-
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        String action = intent.getAction();
+        String data = intent.getDataString();
+        Log.d("_Splash", "onNewIntent: "+data);
+        if (Intent.ACTION_VIEW.equals(action) && data != null) {
+            try{
+                if (data.startsWith("callback://auth_success")) {
+                    Toast.makeText(this, "Refreshed data for callback", Toast.LENGTH_SHORT).show();
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
     @Override
     protected void onPause() {
         super.onPause();
